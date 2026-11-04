@@ -1,31 +1,99 @@
+# ==========================================
+# GitPulse — .gitignore
+# ==========================================
+
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 
-# Production build outputs
+# Production Build Outputs
 dist/
 dist-electron/
+dist-ssr/
+build/
+out/
+bin/
+*.exe
+*.dll
+*.pdb
+*.node
+*.asar
+*.asar.unpacked
 
-# Environment and local configs
+# Environment & Secret Files
 .env
-.env.local
-*.local
+.env.*
+*.env
+*.env.*
+!.env.example
+!.env.template
 
-# Logs
+# API Keys, Tokens & Private Credentials
+*.key
+*.pem
+*.crt
+*.cert
+*.pfx
+*.p12
+id_rsa*
+id_ed25519*
+api_key*
+apikey*
+*secret*
+*token*
+*credential*
+credentials.json
+serviceAccountKey*.json
+client_secret*.json
+google-services.json
+GoogleService-Info.plist
+
+# Webhooks & Sensitive Configs
+*webhook*
+*discord*config*
+config.secret.json
+auth.json
+
+# Local Shortcuts & Shell Launchers
+*.lnk
+
+# Runtime Diagnostics & Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+debug.log
+crash.log
 
-# OS Files
+# Operating System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# Editors
-.vscode/
+# IDE & Editor Configurations
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 .idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*~
 
+# Temporary & Cache Files
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.tmp
+*.bak
