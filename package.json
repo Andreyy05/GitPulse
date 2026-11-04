@@ -1,0 +1,70 @@
+{
+  "name": "gitpulse",
+  "version": "1.0.0",
+  "description": "Minimalist desktop utility for monitoring daily GitHub commit streaks and generating commit fuel",
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev:vite": "vite",
+    "dev:electron": "node scripts/run-electron.cjs",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"VITE,ELECTRON\" -c \"cyan,magenta\" \"npm run dev:vite\" \"npm run dev:electron\"",
+    "build:vite": "vite build",
+    "build": "npm run build:vite && electron-builder --dir",
+    "pack": "npm run build:vite && electron-builder",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "github",
+    "streak",
+    "commit-tracker",
+    "electron",
+    "react",
+    "tailwind",
+    "developer-tools"
+  ],
+  "author": "Andrej Pavliščak",
+  "license": "MIT",
+  "dependencies": {
+    "canvas-confetti": "^1.9.4",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "vite": "^6.0.3",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "appId": "com.gitpulse.app",
+    "productName": "GitPulse",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "assets/**/*"
+    ],
+    "win": {
+      "target": "dir",
+      "icon": "assets/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "forceCodeSigning": false
+  }
+}
