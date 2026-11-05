@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Tray, Menu, shell, Notification, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, shell, Notification, nativeImage, globalShortcut } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { createTrayIcon } = require('./trayIcon.cjs');
@@ -309,6 +309,21 @@ app.whenReady().then(() => {
   createWindow();
   createTray();
 
+  // Global keyboard shortcut: Ctrl+Shift+G (or Cmd+Shift+G on macOS) toggles window visibility
+  globalShortcut.register('CommandOrControl+Shift+G', () => {
+    if (!mainWindow) return;
+    if (mainWindow.isVisible() && mainWindow.isFocused()) {
+      mainWindow.hide();
+    } else {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
+      mainWindow.focus();
+      // Briefly force on top to ensure it surfaces above other windows
+      mainWindow.setAlwaysOnTop(true);
+      mainWindow.setAlwaysOnTop(false);
+    }
+  });
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -322,6 +337,11 @@ app.whenReady().then(() => {
 
 app.on('before-quit', () => {
   isQuitting = true;
+});
+
+app.on('will-quit', () => {
+  // Unregister all global shortcuts before the app exits
+  globalShortcut.unregisterAll();
 });
 
 app.on('window-all-closed', () => {
