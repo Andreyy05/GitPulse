@@ -40,14 +40,15 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection in Main Process at:', promise, 'reason:', reason);
 });
 
-// Single instance handling (do NOT quit if lock fails, just focus or proceed)
+// Single instance handling - ensure only one instance runs so global hotkeys and tray behave properly
 const gotTheLock = app.requestSingleInstanceLock();
-if (gotTheLock) {
+if (!gotTheLock) {
+  app.quit();
+} else {
   app.on('second-instance', () => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.show();
-      mainWindow.restore();
       mainWindow.focus();
       mainWindow.setAlwaysOnTop(true);
       mainWindow.setAlwaysOnTop(false);
@@ -343,19 +344,27 @@ app.whenReady().then(() => {
   createTray();
 
   // Global keyboard shortcut: Ctrl+Shift+G (or Cmd+Shift+G on macOS) toggles window visibility
-  globalShortcut.register('CommandOrControl+Shift+G', () => {
+  const toggleWindow = () => {
     if (!mainWindow) return;
-    if (mainWindow.isVisible() && mainWindow.isFocused()) {
-      mainWindow.hide();
-    } else {
-      if (mainWindow.isMinimized()) mainWindow.restore();
+    if (!mainWindow.isVisible() || mainWindow.isMinimized()) {
+      mainWindow.restore();
       mainWindow.show();
       mainWindow.focus();
-      // Briefly force on top to ensure it surfaces above other windows
       mainWindow.setAlwaysOnTop(true);
       mainWindow.setAlwaysOnTop(false);
+    } else {
+      mainWindow.hide();
     }
-  });
+  };
+
+  try {
+    const registered = globalShortcut.register('CommandOrControl+Shift+G', toggleWindow);
+    if (!registered) {
+      globalShortcut.register('Ctrl+Shift+G', toggleWindow);
+    }
+  } catch (err) {
+    console.warn('Failed to register global shortcut:', err);
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
