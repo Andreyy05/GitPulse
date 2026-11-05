@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, GitCommit, Clock, AlertTriangle, CheckCircle2, ExternalLink } from 'lucide-react';
+import { RefreshCw, GitCommit, Clock, AlertTriangle, CheckCircle2, ExternalLink, Calendar } from 'lucide-react';
 
 export function StatusCard({ data, loading, error, onRefresh }) {
   const [timeLeft, setTimeLeft] = useState(getTimeUntilMidnight());
+  const [hoveredDay, setHoveredDay] = useState(null);
 
   // Real-time countdown to midnight local time
   useEffect(() => {
@@ -194,6 +195,80 @@ export function StatusCard({ data, loading, error, onRefresh }) {
                 }`}
                 style={{ width: `${timeLeft.progressPercent}%` }}
               />
+            </div>
+          </div>
+
+          {/* 14-Day Mini Contribution Heatmap */}
+          <div className="mt-3 pt-3 border-t border-slate-800/80">
+            <div className="flex items-center justify-between text-[11px] font-mono mb-2">
+              <span className="text-slate-400 flex items-center space-x-1.5">
+                <Calendar size={11} className="text-emerald-400" />
+                <span>14-Day Activity</span>
+              </span>
+              <span className="text-[10px] font-mono transition-colors">
+                {hoveredDay ? (
+                  <span className="text-emerald-400 font-medium">
+                    {hoveredDay.count} {hoveredDay.count === 1 ? 'commit' : 'commits'} · {hoveredDay.formattedDate}
+                  </span>
+                ) : (
+                  <span className="text-slate-400">
+                    {data?.total14DaysCommits || 0} commits total
+                  </span>
+                )}
+              </span>
+            </div>
+
+            {/* Squares Row */}
+            <div className="flex items-center justify-between gap-1 p-2 rounded-xl bg-slate-950/60 border border-slate-800/80">
+              {data?.history14Days ? (
+                data.history14Days.map((day) => {
+                  let colorClass = 'bg-slate-800/90 border-slate-700/60 hover:border-slate-500';
+                  if (day.level === 1) {
+                    colorClass = 'bg-emerald-950 border-emerald-800/70 hover:border-emerald-600';
+                  } else if (day.level === 2) {
+                    colorClass = 'bg-emerald-700/85 border-emerald-500/80 hover:border-emerald-400';
+                  } else if (day.level === 3) {
+                    colorClass = 'bg-emerald-500 border-emerald-400 hover:border-emerald-300 shadow-sm shadow-emerald-500/30';
+                  } else if (day.level === 4) {
+                    colorClass = 'bg-emerald-400 border-emerald-300 shadow-md shadow-emerald-400/40';
+                  }
+
+                  return (
+                    <div
+                      key={day.date}
+                      onMouseEnter={() => setHoveredDay(day)}
+                      onMouseLeave={() => setHoveredDay(null)}
+                      title={`${day.count} commit${day.count === 1 ? '' : 's'} on ${day.formattedDate}${day.isToday ? ' (Today)' : ''}`}
+                      className={`flex-1 h-5 rounded-md border transition-all cursor-pointer transform hover:scale-125 ${colorClass} ${
+                        day.isToday ? 'ring-1 ring-indigo-400 ring-offset-1 ring-offset-slate-950' : ''
+                      }`}
+                    />
+                  );
+                })
+              ) : (
+                // Fallback placeholder skeletons while loading
+                Array.from({ length: 14 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 h-5 rounded-md bg-slate-800/50 border border-slate-800 animate-pulse"
+                  />
+                ))
+              )}
+            </div>
+
+            {/* Legend & Labels */}
+            <div className="flex items-center justify-between text-[9px] font-mono text-slate-500 mt-1.5 px-0.5">
+              <span>14d ago</span>
+              <div className="flex items-center space-x-1">
+                <span>Less</span>
+                <span className="w-2 h-2 rounded-sm bg-slate-800/90 border border-slate-700/60 inline-block" />
+                <span className="w-2 h-2 rounded-sm bg-emerald-950 border border-emerald-800/70 inline-block" />
+                <span className="w-2 h-2 rounded-sm bg-emerald-700/85 border border-emerald-500/80 inline-block" />
+                <span className="w-2 h-2 rounded-sm bg-emerald-500 border border-emerald-400 inline-block" />
+                <span className="w-2 h-2 rounded-sm bg-emerald-400 border border-emerald-300 inline-block" />
+                <span>More</span>
+              </div>
+              <span className="font-semibold text-slate-400">Today</span>
             </div>
           </div>
         </div>
