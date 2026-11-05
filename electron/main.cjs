@@ -348,22 +348,22 @@ app.whenReady().then(() => {
   // Global keyboard shortcut: Ctrl+Shift+G (or Cmd+Shift+G on macOS) toggles window visibility
   const toggleWindow = () => {
     if (!mainWindow) return;
-    if (!mainWindow.isVisible() || mainWindow.isMinimized()) {
+    if (mainWindow.isMinimized()) {
       mainWindow.restore();
       mainWindow.show();
       mainWindow.focus();
-      mainWindow.setAlwaysOnTop(true);
-      mainWindow.setAlwaysOnTop(false);
-    } else {
+    } else if (mainWindow.isVisible()) {
       mainWindow.hide();
+    } else {
+      mainWindow.show();
+      mainWindow.focus();
     }
   };
 
   try {
-    const registered = globalShortcut.register('CommandOrControl+Shift+G', toggleWindow);
-    if (!registered) {
-      globalShortcut.register('Ctrl+Shift+G', toggleWindow);
-    }
+    globalShortcut.unregisterAll();
+    const ok = globalShortcut.register('CommandOrControl+Shift+G', toggleWindow);
+    console.log('[GitPulse] Registered CommandOrControl+Shift+G:', ok);
   } catch (err) {
     console.warn('Failed to register global shortcut:', err);
   }

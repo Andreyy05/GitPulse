@@ -117,20 +117,6 @@ export function App() {
     }
   }, [loadActivity]);
 
-  // Window-level shortcut handler for Ctrl+Shift+G (or Cmd+Shift+G)
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'g') {
-        e.preventDefault();
-        if (window.electronAPI?.hideToTray) {
-          window.electronAPI.hideToTray();
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   // Daily Streak Alert check based on configurable alertTime
   useEffect(() => {
     if (!eveningAlert) return;
