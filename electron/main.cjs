@@ -299,6 +299,30 @@ ipcMain.on('open-external-url', (_, url) => {
   }
 });
 
+// Startup & Login item settings
+ipcMain.handle('get-login-item-settings', () => {
+  try {
+    const settings = app.getLoginItemSettings();
+    return settings.openAtLogin;
+  } catch (err) {
+    console.warn('Failed to get login item settings:', err);
+    return false;
+  }
+});
+
+ipcMain.handle('set-login-item-settings', (_, enabled) => {
+  try {
+    app.setLoginItemSettings({
+      openAtLogin: Boolean(enabled),
+    });
+    const settings = app.getLoginItemSettings();
+    return settings.openAtLogin;
+  } catch (err) {
+    console.warn('Failed to set login item settings:', err);
+    return false;
+  }
+});
+
 // App lifecycle
 app.whenReady().then(() => {
   // On Windows, set AppUserModelId early so icon renders properly grouped on taskbar

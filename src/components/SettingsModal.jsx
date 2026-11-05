@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Check, User, Bell, Clock, ShieldCheck, Send, MessageSquare, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Check, User, Bell, Clock, ShieldCheck, Send, MessageSquare, ExternalLink, Rocket } from 'lucide-react';
 import { sendDesktopNotification, sendDiscordWebhook } from '../services/notifications';
 
 export function SettingsModal({
@@ -10,6 +10,7 @@ export function SettingsModal({
   currentEveningAlert,
   currentAlertTime,
   currentDiscordWebhook,
+  currentLaunchAtStartup,
   onSave,
 }) {
   const [username, setUsername] = useState(currentUsername);
@@ -17,8 +18,30 @@ export function SettingsModal({
   const [eveningAlert, setEveningAlert] = useState(currentEveningAlert);
   const [alertTime, setAlertTime] = useState(currentAlertTime || '18:00');
   const [discordWebhook, setDiscordWebhook] = useState(currentDiscordWebhook || '');
+  const [launchAtStartup, setLaunchAtStartup] = useState(() => {
+    if (typeof currentLaunchAtStartup === 'boolean') return currentLaunchAtStartup;
+    return localStorage.getItem('gitpulse_launch_at_startup') === 'true';
+  });
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [testStatus, setTestStatus] = useState(null);
+
+  // Sync startup state from Electron when modal opens
+  useEffect(() => {
+    if (!isOpen) return;
+    let isMounted = true;
+    if (window.electronAPI?.getLoginItemSettings) {
+      window.electronAPI.getLoginItemSettings()
+        .then((openAtLogin) => {
+          if (isMounted && typeof openAtLogin === 'boolean') {
+            setLaunchAtStartup(openAtLogin);
+          }
+        })
+        .catch((err) => console.warn('Could not read login item settings:', err));
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -26,12 +49,19 @@ export function SettingsModal({
     e.preventDefault();
     if (!username.trim()) return;
 
+    // Apply startup setting to Electron and localStorage
+    if (window.electronAPI?.setLoginItemSettings) {
+      window.electronAPI.setLoginItemSettings(launchAtStartup).catch(console.warn);
+    }
+    localStorage.setItem('gitpulse_launch_at_startup', String(launchAtStartup));
+
     onSave({
       username: username.trim(),
       refreshInterval: Number(interval),
       eveningAlert,
       alertTime,
       discordWebhook: discordWebhook.trim(),
+      launchAtStartup,
     });
 
     setSavedSuccess(true);
@@ -120,6 +150,37 @@ export function SettingsModal({
               <option value={30}>Every 30 minutes</option>
               <option value={60}>Every 60 minutes</option>
             </select>
+          </div>
+
+          {/* Launch at Startup Switch */}
+          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+            <div className="flex flex-col pr-2">
+              <span className="font-mono text-slate-200 font-medium flex items-center space-x-1.5">
+                <Rocket size={12} className="text-purple-400" />
+                <span>Launch at Startup</span>
+              </span>
+              <span className="text-[10px] text-slate-400 mt-0.5">
+                Automatically start GitPulse when logging into Windows.
+              </span>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={launchAtStartup}
+              onClick={() => {
+                const nextState = !launchAtStartup;
+                setLaunchAtStartup(nextState);
+              }}
+              className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                launchAtStartup ? 'bg-indigo-600' : 'bg-slate-800'
+              }`}
+            >
+              <span
+                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition duration-200 ease-in-out ${
+                  launchAtStartup ? 'translate-x-4' : 'translate-x-0'
+                }`}
+              />
+            </button>
           </div>
 
           {/* Daily Streak Reminder & Custom Alert Time */}

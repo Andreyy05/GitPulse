@@ -29,6 +29,10 @@ export function App() {
     return localStorage.getItem('gitpulse_discord_webhook') || '';
   });
 
+  const [launchAtStartup, setLaunchAtStartup] = useState(() => {
+    return localStorage.getItem('gitpulse_launch_at_startup') === 'true';
+  });
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -161,12 +165,27 @@ export function App() {
     return () => clearInterval(alertTimer);
   }, [data, eveningAlert, alertTime, username, discordWebhook]);
 
+  // Initial sync for Launch at Startup with Electron
+  useEffect(() => {
+    if (window.electronAPI?.getLoginItemSettings) {
+      window.electronAPI.getLoginItemSettings()
+        .then((openAtLogin) => {
+          if (typeof openAtLogin === 'boolean') {
+            setLaunchAtStartup(openAtLogin);
+            localStorage.setItem('gitpulse_launch_at_startup', String(openAtLogin));
+          }
+        })
+        .catch((err) => console.warn('Failed to query login items:', err));
+    }
+  }, []);
+
   const handleSaveSettings = ({
     username: newUsername,
     refreshInterval: newInterval,
     eveningAlert: newEveningAlert,
     alertTime: newAlertTime,
     discordWebhook: newDiscordWebhook,
+    launchAtStartup: newLaunchAtStartup,
   }) => {
     setUsername(newUsername);
     setRefreshInterval(newInterval);
@@ -179,6 +198,14 @@ export function App() {
     localStorage.setItem('gitpulse_evening_alert', String(newEveningAlert));
     localStorage.setItem('gitpulse_alert_time', newAlertTime);
     localStorage.setItem('gitpulse_discord_webhook', newDiscordWebhook);
+
+    if (typeof newLaunchAtStartup === 'boolean') {
+      setLaunchAtStartup(newLaunchAtStartup);
+      localStorage.setItem('gitpulse_launch_at_startup', String(newLaunchAtStartup));
+      if (window.electronAPI?.setLoginItemSettings) {
+        window.electronAPI.setLoginItemSettings(newLaunchAtStartup).catch(console.warn);
+      }
+    }
 
     hasCelebratedRef.current = false;
   };
@@ -214,6 +241,7 @@ export function App() {
         currentEveningAlert={eveningAlert}
         currentAlertTime={alertTime}
         currentDiscordWebhook={discordWebhook}
+        currentLaunchAtStartup={launchAtStartup}
         onSave={handleSaveSettings}
       />
     </div>

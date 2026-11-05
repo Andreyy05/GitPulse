@@ -16,6 +16,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // External Links
   openExternal: (url) => ipcRenderer.send('open-external-url', url),
 
+  // Startup & Login items
+  getLoginItemSettings: () => ipcRenderer.invoke('get-login-item-settings'),
+  setLoginItemSettings: (enabled) => ipcRenderer.invoke('set-login-item-settings', enabled),
+
   // System events listeners
   onRefreshRequested: (callback) => {
     const handler = () => callback();
