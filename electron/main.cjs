@@ -40,22 +40,24 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection in Main Process at:', promise, 'reason:', reason);
 });
 
-// Single instance handling - ensure only one instance runs so global hotkeys and tray behave properly
-const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) {
-  app.quit();
-} else {
-  app.on('second-instance', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.show();
-      mainWindow.focus();
-      mainWindow.setAlwaysOnTop(true);
-      mainWindow.setAlwaysOnTop(false);
-    } else {
-      createWindow();
-    }
-  });
+// Single instance handling (do not prematurely quit if lock check is ambiguous)
+try {
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (gotTheLock) {
+    app.on('second-instance', () => {
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.show();
+        mainWindow.focus();
+        mainWindow.setAlwaysOnTop(true);
+        mainWindow.setAlwaysOnTop(false);
+      } else {
+        createWindow();
+      }
+    });
+  }
+} catch (e) {
+  console.warn('Single instance lock check error:', e);
 }
 
 function getAppTrayIcon() {
