@@ -345,27 +345,31 @@ app.whenReady().then(() => {
   createWindow();
   createTray();
 
-  // Global keyboard shortcut: Ctrl+Shift+G (or Cmd+Shift+G on macOS) toggles window visibility
-  const toggleWindow = () => {
-    if (!mainWindow) return;
+  function toggleWindow() {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
+
     if (mainWindow.isMinimized()) {
       mainWindow.restore();
       mainWindow.show();
       mainWindow.focus();
-    } else if (mainWindow.isVisible()) {
+    } else if (mainWindow.isVisible() && mainWindow.isFocused()) {
       mainWindow.hide();
     } else {
       mainWindow.show();
+      mainWindow.restore();
       mainWindow.focus();
     }
-  };
+  }
 
-  try {
-    globalShortcut.unregisterAll();
-    const ok = globalShortcut.register('CommandOrControl+Shift+G', toggleWindow);
-    console.log('[GitPulse] Registered CommandOrControl+Shift+G:', ok);
-  } catch (err) {
-    console.warn('Failed to register global shortcut:', err);
+  const shortcutKey = 'CommandOrControl+Shift+G';
+  const success = globalShortcut.register(shortcutKey, () => {
+    toggleWindow();
+  });
+
+  if (!success) {
+    console.error(`[GitPulse] Failed to register global shortcut: ${shortcutKey}`);
+  } else {
+    console.log(`[GitPulse] Registered global shortcut: ${shortcutKey}`);
   }
 
   app.on('activate', () => {
