@@ -220,16 +220,18 @@ export function App() {
         onOpenSettings={() => setIsSettingsOpen(true)}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 p-3 overflow-y-auto overflow-x-hidden space-y-3 custom-scrollbar">
-        <StatusCard
-          data={data}
-          loading={loading}
-          error={error}
-          onRefresh={() => loadActivity(true)}
-        />
+      {/* Main Content Area - Scrollable & Dynamically Adaptive */}
+      <main className="flex-1 w-full p-3 overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col items-center">
+        <div className="w-full max-w-xl space-y-3">
+          <StatusCard
+            data={data}
+            loading={loading}
+            error={error}
+            onRefresh={() => loadActivity(true)}
+          />
 
-        <CommitFuel />
+          <CommitFuel />
+        </div>
       </main>
 
       {/* Settings Modal */}

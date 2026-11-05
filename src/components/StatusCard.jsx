@@ -294,10 +294,10 @@ export function StatusCard({ data, loading, error, onRefresh }) {
                 title={`Open ${push.repo} on GitHub`}
               >
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-mono text-[11px] font-medium text-slate-300 group-hover:text-indigo-400 truncate max-w-[200px]">
+                  <span className="font-mono text-[11px] font-medium text-slate-300 group-hover:text-indigo-400 truncate flex-1 max-w-[240px] sm:max-w-sm md:max-w-md pr-2">
                     {push.repo}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-500">
+                  <span className="text-[10px] font-mono text-slate-500 shrink-0">
                     {push.time}
                   </span>
                 </div>

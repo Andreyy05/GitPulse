@@ -77,14 +77,14 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 380,
     height: 570,
-    minWidth: 360,
-    minHeight: 520,
-    maxWidth: 440,
-    maxHeight: 650,
+    minWidth: 340,
+    minHeight: 480,
+    maxWidth: 900,
+    maxHeight: 1100,
     center: true, // Center directly on screen on launch
     frame: false,
-    resizable: false,
-    maximizable: false,
+    resizable: true,
+    maximizable: true,
     fullscreenable: false,
     transparent: false,
     backgroundColor: '#090d16',
@@ -242,6 +242,15 @@ ipcMain.on('window-focus', () => {
 
 ipcMain.on('window-minimize', () => {
   if (mainWindow) mainWindow.minimize();
+});
+
+ipcMain.on('window-toggle-maximize', () => {
+  if (!mainWindow) return;
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow.maximize();
+  }
 });
 
 ipcMain.on('window-close', () => {

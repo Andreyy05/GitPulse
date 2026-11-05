@@ -1,10 +1,16 @@
 import React from 'react';
-import { Minus, X, Settings as SettingsIcon, Activity } from 'lucide-react';
+import { Minus, Square, X, Settings as SettingsIcon, Activity } from 'lucide-react';
 
 export function Header({ status = 'default', onOpenSettings }) {
   const handleMinimize = () => {
     if (window.electronAPI?.minimize) {
       window.electronAPI.minimize();
+    }
+  };
+
+  const handleToggleMaximize = () => {
+    if (window.electronAPI?.toggleMaximize) {
+      window.electronAPI.toggleMaximize();
     }
   };
 
@@ -22,7 +28,10 @@ export function Header({ status = 'default', onOpenSettings }) {
       : 'bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]';
 
   return (
-    <header className="h-10 bg-slate-950/80 backdrop-blur border-b border-slate-800/80 px-3 flex items-center justify-between select-none drag-region z-50">
+    <header
+      onDoubleClick={handleToggleMaximize}
+      className="h-10 bg-slate-950/80 backdrop-blur border-b border-slate-800/80 px-3 flex items-center justify-between select-none drag-region z-50 shrink-0"
+    >
       {/* Brand & Live Indicator */}
       <div className="flex items-center space-x-2">
         <div className="relative flex items-center justify-center">
@@ -50,6 +59,14 @@ export function Header({ status = 'default', onOpenSettings }) {
           className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 transition-colors"
         >
           <Minus size={14} />
+        </button>
+
+        <button
+          onClick={handleToggleMaximize}
+          title="Maximize / Restore"
+          className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 transition-colors"
+        >
+          <Square size={12} />
         </button>
 
         <button
