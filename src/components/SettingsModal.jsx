@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Check, User, Bell, Clock, ShieldCheck, Send, MessageSquare, ExternalLink, Rocket, Moon, Sun, Monitor, SunMedium, Eye, EyeOff } from 'lucide-react';
 import { sendDesktopNotification, sendDiscordWebhook } from '../services/notifications';
 
@@ -22,6 +22,10 @@ export function SettingsModal({
   const [interval, setInterval] = useState(currentInterval);
   const [eveningAlert, setEveningAlert] = useState(currentEveningAlert);
   const [alertTime, setAlertTime] = useState(currentAlertTime || '18:00');
+  const [hours, setHours] = useState(() => (currentAlertTime || '18:00').split(':')[0] || '18');
+  const [minutes, setMinutes] = useState(() => (currentAlertTime || '18:00').split(':')[1] || '00');
+  const hourInputRef = useRef(null);
+  const minuteInputRef = useRef(null);
   const [discordWebhook, setDiscordWebhook] = useState(currentDiscordWebhook || '');
   const [theme, setTheme] = useState(currentTheme || 'dark');
   const [launchAtStartup, setLaunchAtStartup] = useState(() => {
@@ -31,13 +35,139 @@ export function SettingsModal({
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [testStatus, setTestStatus] = useState(null);
 
+  const updateAlertTime = (h, m) => {
+    const safeH = String(h || '00').padStart(2, '0');
+    const safeM = String(m || '00').padStart(2, '0');
+    setAlertTime(`${safeH}:${safeM}`);
+  };
+
+  const handleHourChange = (e) => {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length > 2) val = val.slice(-2);
+
+    if (val === '') {
+      setHours('');
+      return;
+    }
+
+    let num = parseInt(val, 10);
+    if (num > 23) {
+      val = '23';
+    }
+
+    setHours(val);
+    if (val.length === 2) {
+      updateAlertTime(val, minutes || '00');
+      minuteInputRef.current?.focus();
+      minuteInputRef.current?.select();
+    } else {
+      updateAlertTime(val.padStart(2, '0'), minutes || '00');
+    }
+  };
+
+  const handleHourBlur = () => {
+    let h = hours;
+    if (!h || isNaN(parseInt(h, 10))) {
+      h = '18';
+    } else {
+      let num = Math.min(23, Math.max(0, parseInt(h, 10)));
+      h = String(num).padStart(2, '0');
+    }
+    setHours(h);
+    updateAlertTime(h, minutes || '00');
+  };
+
+  const handleHourKeyDown = (e) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const curr = parseInt(hours || '0', 10);
+      const next = (curr + 1) % 24;
+      const nextStr = String(next).padStart(2, '0');
+      setHours(nextStr);
+      updateAlertTime(nextStr, minutes || '00');
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const curr = parseInt(hours || '0', 10);
+      const next = (curr - 1 + 24) % 24;
+      const nextStr = String(next).padStart(2, '0');
+      setHours(nextStr);
+      updateAlertTime(nextStr, minutes || '00');
+    } else if (e.key === ':' || e.key === 'Enter') {
+      e.preventDefault();
+      minuteInputRef.current?.focus();
+      minuteInputRef.current?.select();
+    } else if (e.key === 'ArrowRight' && e.target.selectionStart === e.target.value.length) {
+      minuteInputRef.current?.focus();
+      minuteInputRef.current?.select();
+    }
+  };
+
+  const handleMinuteChange = (e) => {
+    let val = e.target.value.replace(/\D/g, '');
+    if (val.length > 2) val = val.slice(-2);
+
+    if (val === '') {
+      setMinutes('');
+      return;
+    }
+
+    let num = parseInt(val, 10);
+    if (num > 59) {
+      val = '59';
+    }
+
+    setMinutes(val);
+    updateAlertTime(hours || '18', val.padStart(2, '0'));
+  };
+
+  const handleMinuteBlur = () => {
+    let m = minutes;
+    if (!m || isNaN(parseInt(m, 10))) {
+      m = '00';
+    } else {
+      let num = Math.min(59, Math.max(0, parseInt(m, 10)));
+      m = String(num).padStart(2, '0');
+    }
+    setMinutes(m);
+    updateAlertTime(hours || '18', m);
+  };
+
+  const handleMinuteKeyDown = (e) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const curr = parseInt(minutes || '0', 10);
+      const next = (curr + 1) % 60;
+      const nextStr = String(next).padStart(2, '0');
+      setMinutes(nextStr);
+      updateAlertTime(hours || '18', nextStr);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const curr = parseInt(minutes || '0', 10);
+      const next = (curr - 1 + 60) % 60;
+      const nextStr = String(next).padStart(2, '0');
+      setMinutes(nextStr);
+      updateAlertTime(hours || '18', nextStr);
+    } else if (e.key === 'Backspace' && (minutes === '' || e.target.selectionStart === 0)) {
+      hourInputRef.current?.focus();
+      hourInputRef.current?.select();
+    } else if (e.key === 'ArrowLeft' && e.target.selectionStart === 0) {
+      hourInputRef.current?.focus();
+      hourInputRef.current?.select();
+    }
+  };
+
   // Sync props when modal opens
   useEffect(() => {
     if (isOpen) {
       setTheme(currentTheme || 'dark');
       setPat(currentPat || currentGithubToken || localStorage.getItem('gitpulse_pat') || localStorage.getItem('gitpulse_github_token') || '');
+      const initialAlert = currentAlertTime || '18:00';
+      setAlertTime(initialAlert);
+      const [h, m] = initialAlert.split(':');
+      setHours((h || '18').padStart(2, '0'));
+      setMinutes((m || '00').padStart(2, '0'));
     }
-  }, [isOpen, currentTheme, currentPat, currentGithubToken]);
+  }, [isOpen, currentTheme, currentPat, currentGithubToken, currentAlertTime]);
 
   // Sync startup state from Electron when modal opens
   useEffect(() => {
@@ -286,28 +416,63 @@ export function SettingsModal({
               <div className="pl-6 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-600 dark:text-zinc-400 text-xs font-medium">Reminder Time:</span>
-                  <input
-                    type="time"
-                    value={alertTime}
-                    onChange={(e) => setAlertTime(e.target.value)}
-                    className="bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200/90 dark:border-white/[0.08] rounded-lg px-2.5 py-1 text-zinc-900 dark:text-zinc-200 font-mono text-xs focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500"
-                  />
+                  <div className="flex items-center space-x-1.5">
+                    <input
+                      ref={hourInputRef}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={2}
+                      value={hours}
+                      onChange={handleHourChange}
+                      onBlur={handleHourBlur}
+                      onKeyDown={handleHourKeyDown}
+                      onFocus={(e) => e.target.select()}
+                      placeholder="18"
+                      className="w-10 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700/80 text-zinc-900 dark:text-zinc-100 rounded-lg text-center font-mono py-1 px-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+                      aria-label="Hours"
+                    />
+                    <span className="text-zinc-400 dark:text-zinc-500 font-mono font-bold text-xs select-none">:</span>
+                    <input
+                      ref={minuteInputRef}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={2}
+                      value={minutes}
+                      onChange={handleMinuteChange}
+                      onBlur={handleMinuteBlur}
+                      onKeyDown={handleMinuteKeyDown}
+                      onFocus={(e) => e.target.select()}
+                      placeholder="00"
+                      className="w-10 bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700/80 text-zinc-900 dark:text-zinc-100 rounded-lg text-center font-mono py-1 px-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-colors"
+                      aria-label="Minutes"
+                    />
+                  </div>
                 </div>
                 <div className="flex items-center space-x-1.5">
-                  {['17:00', '18:00', '20:00', '21:30'].map((preset) => (
-                    <button
-                      key={preset}
-                      type="button"
-                      onClick={() => setAlertTime(preset)}
-                      className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${
-                        alertTime === preset
-                          ? 'bg-zinc-900 text-white font-medium border-zinc-900 dark:bg-white/15 dark:border-white/20 dark:text-white'
-                          : 'bg-zinc-100 border-zinc-200/80 text-zinc-600 hover:text-zinc-900 dark:bg-white/[0.02] dark:border-white/[0.06] dark:text-zinc-400 dark:hover:text-zinc-200'
-                      }`}
-                    >
-                      {preset}
-                    </button>
-                  ))}
+                  {['17:00', '18:00', '20:00', '21:30'].map((preset) => {
+                    const isActive = alertTime === preset;
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => {
+                          setAlertTime(preset);
+                          const [h, m] = preset.split(':');
+                          setHours(h);
+                          setMinutes(m);
+                        }}
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded-md border transition-colors ${
+                          isActive
+                            ? 'bg-zinc-800 border-zinc-500 text-white font-medium shadow-xs'
+                            : 'bg-zinc-100 border-zinc-200/80 text-zinc-600 hover:text-zinc-900 dark:bg-white/[0.02] dark:border-white/[0.06] dark:text-zinc-400 dark:hover:text-zinc-200'
+                        }`}
+                      >
+                        {preset}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
