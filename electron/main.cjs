@@ -1,7 +1,22 @@
+delete process.env.ELECTRON_RUN_AS_NODE;
+
 const { app, BrowserWindow, ipcMain, Tray, Menu, shell, Notification, nativeImage, globalShortcut } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { createTrayIcon } = require('./trayIcon.cjs');
+
+// Single Instance Lock check
+if (app) {
+  if (process.platform === 'win32') {
+    app.setAppUserModelId('com.gitpulse.app');
+  }
+
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (!gotTheLock) {
+    app.quit();
+    return;
+  }
+}
 
 let mainWindow = null;
 let tray = null;
@@ -13,6 +28,21 @@ let currentTrayStatus = {
 };
 
 const isDev = process.env.VITE_DEV === 'true';
+
+// Handle second-instance event
+if (app) {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      if (!mainWindow.isVisible()) mainWindow.show();
+      mainWindow.focus();
+      mainWindow.setAlwaysOnTop(true);
+      mainWindow.setAlwaysOnTop(false);
+    } else {
+      createWindow();
+    }
+  });
+}
 
 function resolveAssetPath(relativePath) {
   if (app.isPackaged) {
@@ -40,25 +70,6 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection in Main Process at:', promise, 'reason:', reason);
 });
 
-// Single instance handling (do not prematurely quit if lock check is ambiguous)
-try {
-  const gotTheLock = app.requestSingleInstanceLock();
-  if (gotTheLock) {
-    app.on('second-instance', () => {
-      if (mainWindow) {
-        if (mainWindow.isMinimized()) mainWindow.restore();
-        mainWindow.show();
-        mainWindow.focus();
-        mainWindow.setAlwaysOnTop(true);
-        mainWindow.setAlwaysOnTop(false);
-      } else {
-        createWindow();
-      }
-    });
-  }
-} catch (e) {
-  console.warn('Single instance lock check error:', e);
-}
 
 function getAppTrayIcon() {
   try {
@@ -73,7 +84,7 @@ function getAppTrayIcon() {
   } catch (err) {
     console.warn('Could not load assets icon for tray:', err);
   }
-  return nativeImage.createEmpty();
+  return createTrayIcon('default');
 }
 
 function createWindow() {
@@ -117,6 +128,18 @@ function createWindow() {
       console.error('Fallback loadURL error:', err);
     });
   }
+
+  mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+    console.log(`[RENDERER LOG ${level}] ${message} (${sourceId}:${line})`);
+  });
+
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    console.error(`[RENDERER FAIL-LOAD] ${errorCode}: ${errorDescription} (${validatedURL})`);
+  });
+
+  mainWindow.webContents.on('render-process-gone', (event, details) => {
+    console.error(`[RENDERER GONE]`, details);
+  });
 
   // Ensure window is shown and focused immediately once DOM is ready
   mainWindow.once('ready-to-show', () => {
@@ -338,6 +361,28 @@ ipcMain.handle('set-login-item-settings', (_, enabled) => {
   } catch (err) {
     console.warn('Failed to set login item settings:', err);
     return false;
+  }
+});
+
+// Fetch GitHub contributions HTML without CORS or CSP restrictions
+ipcMain.handle('fetch-github-contributions', async (_, username) => {
+  if (!username) return null;
+  try {
+    const url = `https://github.com/users/${encodeURIComponent(username.trim())}/contributions`;
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+      },
+    });
+    if (!res.ok) {
+      console.warn(`[GitPulse Main] GitHub contributions response not ok: ${res.status}`);
+      return null;
+    }
+    return await res.text();
+  } catch (err) {
+    console.warn('[GitPulse Main] Error fetching contributions HTML:', err);
+    return null;
   }
 });
 

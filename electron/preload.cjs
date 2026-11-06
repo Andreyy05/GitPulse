@@ -24,6 +24,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Window theme & background synchronization
   setWindowTheme: (isDark) => ipcRenderer.send('set-window-theme', isDark),
 
+  // GitHub contribution calendar scraping/fallback
+  fetchGithubContributions: (username) => ipcRenderer.invoke('fetch-github-contributions', username),
+
   // System events listeners
   onRefreshRequested: (callback) => {
     const handler = () => callback();
