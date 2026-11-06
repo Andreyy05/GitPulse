@@ -128,21 +128,21 @@ export function StatusCard({ data, loading, error, onRefresh }) {
           <div className="flex items-center justify-between mb-3.5">
             {/* Status Pill */}
             <div
-              className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium tracking-tight ${
+              className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-semibold tracking-tight ${
                 hasPushed
                   ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
-                  : 'bg-amber-50 border border-amber-200 text-amber-800 dark:bg-zinc-800/60 dark:text-zinc-400 dark:border-white/[0.06]'
+                  : 'bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
               }`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${hasPushed ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-amber-500 dark:bg-amber-400'}`} />
-              <span>{hasPushed ? 'Streak Active' : 'Pending Push'}</span>
+              <span>{hasPushed ? 'STREAK ACTIVE' : 'PENDING PUSH / STREAK AT RISK'}</span>
             </div>
 
             <span
               className={`text-xs font-medium tracking-tight ${
                 hasPushed
                   ? 'text-zinc-600 dark:text-zinc-400'
-                  : 'text-amber-700 dark:text-amber-400/90 font-medium'
+                  : 'text-amber-700 dark:text-amber-400/90'
               }`}
             >
               {hasPushed ? 'Safe today' : 'Streak at risk'}
@@ -156,7 +156,7 @@ export function StatusCard({ data, loading, error, onRefresh }) {
             </span>
             <div className="flex flex-col">
               <span className="text-xs font-medium text-zinc-900 dark:text-zinc-200 tracking-tight">
-                {commitCount === 1 ? 'commit pushed today' : 'commits pushed today'}
+                {commitCount === 1 ? '1 commit pushed today' : `${commitCount} commits pushed today`}
               </span>
               <span className="text-[11px] text-zinc-600 dark:text-zinc-400">
                 {hasPushed
@@ -208,10 +208,10 @@ export function StatusCard({ data, loading, error, onRefresh }) {
                 <Calendar size={12} className="text-zinc-500 dark:text-zinc-400" />
                 <span>14-Day Activity</span>
               </span>
-              <span className="text-[11px] text-zinc-600 dark:text-zinc-400 transition-colors">
+              <span className="text-[11px] text-zinc-600 dark:text-zinc-400 transition-colors font-medium">
                 {hoveredDay ? (
-                  <span className="text-zinc-900 dark:text-zinc-200 font-medium">
-                    {hoveredDay.count} {hoveredDay.count === 1 ? 'commit' : 'commits'} · {hoveredDay.formattedDate}
+                  <span className="text-zinc-900 dark:text-zinc-200">
+                    {hoveredDay.date}: {hoveredDay.count} {hoveredDay.count === 1 ? 'commit' : 'commits'}
                   </span>
                 ) : (
                   <span>
@@ -229,11 +229,9 @@ export function StatusCard({ data, loading, error, onRefresh }) {
                   if (day.level === 1) {
                     colorClass = 'bg-emerald-200 border border-emerald-300/80 dark:bg-emerald-950/70 dark:border-emerald-900/60';
                   } else if (day.level === 2) {
-                    colorClass = 'bg-emerald-400 border border-emerald-500/80 dark:bg-emerald-700/60 dark:border-emerald-600/50';
-                  } else if (day.level === 3) {
-                    colorClass = 'bg-emerald-500 border border-emerald-600 dark:bg-emerald-500/80 dark:border-emerald-500/40';
-                  } else if (day.level === 4) {
-                    colorClass = 'bg-emerald-600 border border-emerald-700 dark:bg-emerald-400 dark:border-emerald-300/60';
+                    colorClass = 'bg-emerald-400 border border-emerald-500/80 dark:bg-emerald-700/70 dark:border-emerald-600/60';
+                  } else if (day.level >= 3) {
+                    colorClass = 'bg-emerald-600 border border-emerald-700 dark:bg-emerald-500 dark:border-emerald-400';
                   }
 
                   return (
@@ -241,9 +239,9 @@ export function StatusCard({ data, loading, error, onRefresh }) {
                       key={day.date}
                       onMouseEnter={() => setHoveredDay(day)}
                       onMouseLeave={() => setHoveredDay(null)}
-                      title={`${day.count} commit${day.count === 1 ? '' : 's'} on ${day.formattedDate}${day.isToday ? ' (Today)' : ''}`}
+                      title={`${day.date}: ${day.count} ${day.count === 1 ? 'commit' : 'commits'}`}
                       className={`flex-1 h-4 rounded-[4px] border transition-colors cursor-pointer hover:opacity-85 ${colorClass} ${
-                        day.isToday ? 'border-2 border-zinc-400 dark:border-white/50' : ''
+                        day.isToday ? 'border-2 border-zinc-400 dark:border-white/50 ring-1 ring-zinc-400/50 dark:ring-white/30' : ''
                       }`}
                     />
                   );
@@ -264,11 +262,10 @@ export function StatusCard({ data, loading, error, onRefresh }) {
               <span>14d ago</span>
               <div className="flex items-center space-x-1">
                 <span>Less</span>
-                <span className="w-2.5 h-2.5 rounded-[2px] bg-zinc-200 border border-zinc-300/40 dark:bg-white/[0.05] dark:border-white/[0.04] inline-block" />
-                <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-200 border border-emerald-300/80 dark:bg-emerald-950/70 dark:border-emerald-900/60 inline-block" />
-                <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-400 border border-emerald-500/80 dark:bg-emerald-700/60 dark:border-emerald-600/50 inline-block" />
-                <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500 border border-emerald-600 dark:bg-emerald-500/80 dark:border-emerald-500/40 inline-block" />
-                <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-600 border border-emerald-700 dark:bg-emerald-400 dark:border-emerald-300/60 inline-block" />
+                <span title="0 commits" className="w-2.5 h-2.5 rounded-[2px] bg-zinc-200 border border-zinc-300/40 dark:bg-white/[0.05] dark:border-white/[0.04] inline-block" />
+                <span title="1–2 commits" className="w-2.5 h-2.5 rounded-[2px] bg-emerald-200 border border-emerald-300/80 dark:bg-emerald-950/70 dark:border-emerald-900/60 inline-block" />
+                <span title="3–5 commits" className="w-2.5 h-2.5 rounded-[2px] bg-emerald-400 border border-emerald-500/80 dark:bg-emerald-700/70 dark:border-emerald-600/60 inline-block" />
+                <span title="6+ commits" className="w-2.5 h-2.5 rounded-[2px] bg-emerald-600 border border-emerald-700 dark:bg-emerald-500 dark:border-emerald-400 inline-block" />
                 <span>More</span>
               </div>
               <span className="text-zinc-800 dark:text-zinc-300 font-medium">Today</span>
