@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, User, Bell, Clock, ShieldCheck, Send, MessageSquare, ExternalLink, Rocket, Moon, Sun, Monitor, SunMedium } from 'lucide-react';
+import { X, Check, User, Bell, Clock, ShieldCheck, Send, MessageSquare, ExternalLink, Rocket, Moon, Sun, Monitor, SunMedium, Eye, EyeOff } from 'lucide-react';
 import { sendDesktopNotification, sendDiscordWebhook } from '../services/notifications';
 
 export function SettingsModal({
   isOpen,
   onClose,
   currentUsername,
+  currentPat,
+  currentGithubToken,
   currentInterval,
   currentEveningAlert,
   currentAlertTime,
@@ -15,6 +17,8 @@ export function SettingsModal({
   onSave,
 }) {
   const [username, setUsername] = useState(currentUsername);
+  const [pat, setPat] = useState(currentPat || currentGithubToken || '');
+  const [showPat, setShowPat] = useState(false);
   const [interval, setInterval] = useState(currentInterval);
   const [eveningAlert, setEveningAlert] = useState(currentEveningAlert);
   const [alertTime, setAlertTime] = useState(currentAlertTime || '18:00');
@@ -31,8 +35,9 @@ export function SettingsModal({
   useEffect(() => {
     if (isOpen) {
       setTheme(currentTheme || 'dark');
+      setPat(currentPat || currentGithubToken || localStorage.getItem('gitpulse_pat') || localStorage.getItem('gitpulse_github_token') || '');
     }
-  }, [isOpen, currentTheme]);
+  }, [isOpen, currentTheme, currentPat, currentGithubToken]);
 
   // Sync startup state from Electron when modal opens
   useEffect(() => {
@@ -63,9 +68,12 @@ export function SettingsModal({
       window.electronAPI.setLoginItemSettings(launchAtStartup).catch(console.warn);
     }
     localStorage.setItem('gitpulse_launch_at_startup', String(launchAtStartup));
+    localStorage.setItem('gitpulse_pat', pat.trim());
 
     onSave({
       username: username.trim(),
+      pat: pat.trim(),
+      githubToken: pat.trim(),
       refreshInterval: Number(interval),
       eveningAlert,
       alertTime,
@@ -174,6 +182,34 @@ export function SettingsModal({
             </div>
             <span className="text-[10px] text-zinc-500 dark:text-zinc-400">
               Monitors public activity events from GitHub API.
+            </span>
+          </div>
+
+          {/* GitHub Personal Access Token (PAT) */}
+          <div className="flex flex-col space-y-1">
+            <label className="text-zinc-700 dark:text-zinc-300 font-medium tracking-tight flex items-center space-x-1">
+              <ShieldCheck size={12} className="text-zinc-500 dark:text-zinc-400" />
+              <span>GitHub Personal Access Token</span>
+            </label>
+            <div className="relative">
+              <input
+                type={showPat ? 'text' : 'password'}
+                value={pat}
+                onChange={(e) => setPat(e.target.value)}
+                placeholder="ghp_..."
+                className="w-full bg-zinc-50 dark:bg-white/[0.03] border border-zinc-200/90 dark:border-white/[0.08] rounded-lg pl-3 pr-8 py-1.5 text-zinc-900 dark:text-zinc-100 text-xs focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500 focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 transition-all font-mono placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPat(!showPat)}
+                className="absolute right-2.5 top-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+                title={showPat ? 'Skrýt token' : 'Zobrazit token'}
+              >
+                {showPat ? <EyeOff size={13} /> : <Eye size={13} />}
+              </button>
+            </div>
+            <span className="text-[10px] text-zinc-500 dark:text-zinc-400">
+              Zvyšuje limit API na 5 000 požadavků/hod.
             </span>
           </div>
 

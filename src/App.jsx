@@ -29,6 +29,10 @@ export function App() {
     return localStorage.getItem('gitpulse_discord_webhook') || '';
   });
 
+  const [githubToken, setGithubToken] = useState(() => {
+    return localStorage.getItem('gitpulse_pat') || localStorage.getItem('gitpulse_github_token') || '';
+  });
+
   const [launchAtStartup, setLaunchAtStartup] = useState(() => {
     return localStorage.getItem('gitpulse_launch_at_startup') === 'true';
   });
@@ -46,8 +50,11 @@ export function App() {
   const hasCelebratedRef = useRef(false);
 
   const loadActivity = useCallback(
-    async (isManual = false) => {
-      if (!username || !username.trim()) {
+    async (isManual = false, overrideUser = null, overrideToken = null) => {
+      const activeUser = overrideUser ?? username;
+      const activeToken = overrideToken ?? githubToken;
+
+      if (!activeUser || !activeUser.trim()) {
         setError('Please configure your GitHub username in Settings.');
         setData(null);
         return;
@@ -57,7 +64,7 @@ export function App() {
       setError(null);
 
       try {
-        const result = await fetchGitHubActivity(username);
+        const result = await fetchGitHubActivity(activeUser, activeToken);
         setData(result);
 
         // Update Electron tray status
@@ -93,7 +100,7 @@ export function App() {
         setLoading(false);
       }
     },
-    [username]
+    [username, githubToken]
   );
 
   // Fetch on mount and when username changes
@@ -218,6 +225,8 @@ export function App() {
 
   const handleSaveSettings = ({
     username: newUsername,
+    pat: newPat,
+    githubToken: newGithubToken,
     refreshInterval: newInterval,
     eveningAlert: newEveningAlert,
     alertTime: newAlertTime,
@@ -225,13 +234,17 @@ export function App() {
     launchAtStartup: newLaunchAtStartup,
     theme: newTheme,
   }) => {
+    const resolvedToken = typeof newPat === 'string' ? newPat : (newGithubToken || '');
     setUsername(newUsername);
+    setGithubToken(resolvedToken);
     setRefreshInterval(newInterval);
     setEveningAlert(newEveningAlert);
     setAlertTime(newAlertTime);
     setDiscordWebhook(newDiscordWebhook);
 
     localStorage.setItem('gitpulse_username', newUsername);
+    localStorage.setItem('gitpulse_pat', resolvedToken);
+    localStorage.setItem('gitpulse_github_token', resolvedToken);
     localStorage.setItem('gitpulse_interval', String(newInterval));
     localStorage.setItem('gitpulse_evening_alert', String(newEveningAlert));
     localStorage.setItem('gitpulse_alert_time', newAlertTime);
@@ -251,6 +264,9 @@ export function App() {
     }
 
     hasCelebratedRef.current = false;
+
+    // Immediately trigger a sync with the new settings
+    loadActivity(true, newUsername, resolvedToken);
   };
 
   const currentStatus = data?.hasPushedToday ? 'green' : data ? 'red' : 'default';
@@ -282,6 +298,8 @@ export function App() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         currentUsername={username}
+        currentPat={githubToken}
+        currentGithubToken={githubToken}
         currentInterval={refreshInterval}
         currentEveningAlert={eveningAlert}
         currentAlertTime={alertTime}
