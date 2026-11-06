@@ -58,31 +58,31 @@ export function StatusCard({ data, loading, error, onRefresh }) {
   const commitCount = data?.totalCommitsToday || 0;
 
   return (
-    <div className="flex flex-col space-y-3">
+    <div className="flex flex-col space-y-3.5">
       {/* User Info Bar */}
-      <div className="flex items-center justify-between px-1">
+      <div className="flex items-center justify-between px-0.5">
         <div className="flex items-center space-x-2">
           {data?.avatarUrl ? (
             <img
               src={data.avatarUrl}
               alt={data?.username || 'User'}
-              className="w-7 h-7 rounded-full border border-slate-700 object-cover"
+              className="w-6 h-6 rounded-full border border-white/[0.08] object-cover"
             />
           ) : (
-            <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-mono text-slate-400">
+            <div className="w-6 h-6 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-[10px] text-zinc-400">
               GH
             </div>
           )}
           <div className="flex flex-col">
             <button
               onClick={handleOpenProfile}
-              className="font-mono text-xs font-semibold text-slate-200 hover:text-indigo-400 flex items-center space-x-1 transition-colors text-left"
+              className="text-xs font-medium text-zinc-300 hover:text-white flex items-center space-x-1 transition-colors text-left tracking-tight"
               title="Open GitHub Profile"
             >
               <span>@{data?.username || 'user'}</span>
-              <ExternalLink size={10} className="opacity-60" />
+              <ExternalLink size={10} className="text-zinc-500" />
             </button>
-            <span className="text-[10px] text-slate-400">
+            <span className="text-[11px] text-zinc-500">
               {data?.updatedAt ? `Synced ${data.updatedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Not synced'}
             </span>
           </div>
@@ -92,70 +92,57 @@ export function StatusCard({ data, loading, error, onRefresh }) {
         <button
           onClick={onRefresh}
           disabled={loading}
-          className="p-1.5 rounded-lg bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all disabled:opacity-50 flex items-center space-x-1 text-xs"
+          className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] text-zinc-400 hover:text-zinc-200 transition-colors disabled:opacity-50 flex items-center space-x-1.5 text-xs"
           title="Refresh now"
         >
-          <RefreshCw size={13} className={loading ? 'animate-spin text-indigo-400' : ''} />
-          <span className="text-[11px] font-mono">Sync</span>
+          <RefreshCw size={12} className={loading ? 'animate-spin text-zinc-300' : 'text-zinc-400'} />
+          <span className="text-xs font-normal">Sync</span>
         </button>
       </div>
 
       {/* Main Status Hero Card */}
       {error ? (
-        <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-800/50 text-rose-300 text-xs flex items-start space-x-2">
-          <AlertTriangle size={16} className="text-rose-400 shrink-0 mt-0.5" />
+        <div className="p-4 rounded-xl bg-rose-500/[0.06] border border-rose-500/20 text-rose-300 text-xs flex items-start space-x-2.5">
+          <AlertTriangle size={15} className="text-rose-400 shrink-0 mt-0.5" />
           <div className="flex-1">
-            <p className="font-semibold text-rose-200">Unable to check activity</p>
+            <p className="font-medium text-rose-200">Unable to check activity</p>
             <p className="text-[11px] text-rose-400/90 mt-0.5">{error}</p>
           </div>
         </div>
       ) : (
-        <div
-          className={`relative overflow-hidden p-4 rounded-2xl border transition-all duration-300 ${
-            hasPushed
-              ? 'bg-gradient-to-b from-emerald-950/40 to-slate-900/90 border-emerald-500/40 shadow-glow-green'
-              : 'bg-gradient-to-b from-rose-950/40 to-slate-900/90 border-rose-500/40 shadow-glow-red'
-          }`}
-        >
-          {/* Subtle Ambient Glow Effect inside card */}
-          <div
-            className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-2xl pointer-events-none ${
-              hasPushed ? 'bg-emerald-500/15' : 'bg-rose-500/15'
-            }`}
-          />
-
-          <div className="flex items-center justify-between mb-3">
+        <div className="relative p-5 rounded-xl bg-white/[0.03] border border-white/[0.08] transition-all">
+          <div className="flex items-center justify-between mb-3.5">
             {/* Status Pill */}
             <div
-              className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold uppercase tracking-wider ${
+              className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium tracking-tight ${
                 hasPushed
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                  : 'bg-rose-500/20 text-rose-300 border border-rose-500/30 animate-pulse'
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                  : 'bg-zinc-800/60 text-zinc-400 border border-white/[0.06]'
               }`}
             >
-              {hasPushed ? <CheckCircle2 size={12} /> : <AlertTriangle size={12} />}
+              <span className={`w-1.5 h-1.5 rounded-full ${hasPushed ? 'bg-emerald-400' : 'bg-amber-400'}`} />
               <span>{hasPushed ? 'Streak Active' : 'Pending Push'}</span>
             </div>
 
-            <span className="text-[10px] font-mono text-slate-400">
+            <span className="text-xs text-zinc-500">
               {hasPushed ? 'Safe today' : 'Streak at risk'}
             </span>
           </div>
 
           {/* Commits Big Counter */}
-          <div className="flex items-baseline space-x-3 my-2">
+          <div className="flex items-baseline space-x-3 my-3">
             <span
-              className={`text-4xl font-mono font-bold tracking-tight ${
-                hasPushed ? 'text-emerald-400' : 'text-slate-300'
+              className={`text-4xl font-semibold tracking-tight ${
+                hasPushed ? 'text-white' : 'text-zinc-200'
               }`}
             >
               {commitCount}
             </span>
             <div className="flex flex-col">
-              <span className="text-xs font-semibold text-slate-200">
+              <span className="text-xs font-medium text-zinc-200 tracking-tight">
                 {commitCount === 1 ? 'commit pushed today' : 'commits pushed today'}
               </span>
-              <span className="text-[10px] text-slate-400">
+              <span className="text-[11px] text-zinc-500">
                 {hasPushed
                   ? `Last push at ${data?.lastPushTime || 'today'}`
                   : 'No commits detected on public events yet'}
@@ -164,19 +151,19 @@ export function StatusCard({ data, loading, error, onRefresh }) {
           </div>
 
           {/* Countdown to Midnight */}
-          <div className="mt-3 pt-3 border-t border-slate-800/80">
-            <div className="flex items-center justify-between text-[11px] mb-1.5 font-mono">
-              <span className="text-slate-400 flex items-center space-x-1">
-                <Clock size={11} className={timeLeft.isUrgent ? 'text-rose-400' : 'text-slate-400'} />
+          <div className="mt-4 pt-3.5 border-t border-white/[0.06]">
+            <div className="flex items-center justify-between text-xs mb-2">
+              <span className="text-zinc-400 flex items-center space-x-1.5">
+                <Clock size={12} className={timeLeft.isUrgent ? 'text-rose-400' : 'text-zinc-500'} />
                 <span>Time until midnight:</span>
               </span>
               <span
-                className={`font-semibold ${
+                className={`font-mono text-xs ${
                   hasPushed
-                    ? 'text-slate-300'
+                    ? 'text-zinc-300'
                     : timeLeft.isUrgent
-                    ? 'text-rose-400 font-bold'
-                    : 'text-amber-300'
+                    ? 'text-rose-400 font-medium'
+                    : 'text-zinc-300'
                 }`}
               >
                 {timeLeft.formatted}
@@ -184,14 +171,14 @@ export function StatusCard({ data, loading, error, onRefresh }) {
             </div>
 
             {/* Time progress bar */}
-            <div className="w-full bg-slate-800/80 rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-white/[0.04] rounded-full h-1 overflow-hidden">
               <div
                 className={`h-full transition-all duration-1000 ${
                   hasPushed
                     ? 'bg-emerald-500'
                     : timeLeft.isUrgent
                     ? 'bg-rose-500'
-                    : 'bg-indigo-500'
+                    : 'bg-zinc-400'
                 }`}
                 style={{ width: `${timeLeft.progressPercent}%` }}
               />
@@ -199,19 +186,19 @@ export function StatusCard({ data, loading, error, onRefresh }) {
           </div>
 
           {/* 14-Day Mini Contribution Heatmap */}
-          <div className="mt-3 pt-3 border-t border-slate-800/80">
-            <div className="flex items-center justify-between text-[11px] font-mono mb-2">
-              <span className="text-slate-400 flex items-center space-x-1.5">
-                <Calendar size={11} className="text-emerald-400" />
+          <div className="mt-4 pt-3.5 border-t border-white/[0.06]">
+            <div className="flex items-center justify-between text-xs mb-2.5">
+              <span className="text-zinc-400 flex items-center space-x-1.5">
+                <Calendar size={12} className="text-zinc-400" />
                 <span>14-Day Activity</span>
               </span>
-              <span className="text-[10px] font-mono transition-colors">
+              <span className="text-[11px] text-zinc-500 transition-colors">
                 {hoveredDay ? (
-                  <span className="text-emerald-400 font-medium">
+                  <span className="text-zinc-300 font-medium">
                     {hoveredDay.count} {hoveredDay.count === 1 ? 'commit' : 'commits'} · {hoveredDay.formattedDate}
                   </span>
                 ) : (
-                  <span className="text-slate-400">
+                  <span>
                     {data?.total14DaysCommits || 0} commits total
                   </span>
                 )}
@@ -219,18 +206,18 @@ export function StatusCard({ data, loading, error, onRefresh }) {
             </div>
 
             {/* Squares Row */}
-            <div className="flex items-center justify-between gap-1 p-2 rounded-xl bg-slate-950/60 border border-slate-800/80">
+            <div className="flex items-center justify-between gap-1.5 p-2 rounded-lg bg-white/[0.02] border border-white/[0.04]">
               {data?.history14Days ? (
                 data.history14Days.map((day) => {
-                  let colorClass = 'bg-slate-800/90 border-slate-700/60 hover:border-slate-500';
+                  let colorClass = 'bg-white/[0.05] border border-white/[0.04]';
                   if (day.level === 1) {
-                    colorClass = 'bg-emerald-950 border-emerald-800/70 hover:border-emerald-600';
+                    colorClass = 'bg-emerald-950/70 border border-emerald-900/60';
                   } else if (day.level === 2) {
-                    colorClass = 'bg-emerald-700/85 border-emerald-500/80 hover:border-emerald-400';
+                    colorClass = 'bg-emerald-700/60 border border-emerald-600/50';
                   } else if (day.level === 3) {
-                    colorClass = 'bg-emerald-500 border-emerald-400 hover:border-emerald-300 shadow-sm shadow-emerald-500/30';
+                    colorClass = 'bg-emerald-500/80 border border-emerald-500/40';
                   } else if (day.level === 4) {
-                    colorClass = 'bg-emerald-400 border-emerald-300 shadow-md shadow-emerald-400/40';
+                    colorClass = 'bg-emerald-400 border border-emerald-300/60';
                   }
 
                   return (
@@ -239,8 +226,8 @@ export function StatusCard({ data, loading, error, onRefresh }) {
                       onMouseEnter={() => setHoveredDay(day)}
                       onMouseLeave={() => setHoveredDay(null)}
                       title={`${day.count} commit${day.count === 1 ? '' : 's'} on ${day.formattedDate}${day.isToday ? ' (Today)' : ''}`}
-                      className={`flex-1 h-5 rounded-md border transition-all cursor-pointer transform hover:scale-125 ${colorClass} ${
-                        day.isToday ? 'ring-1 ring-indigo-400 ring-offset-1 ring-offset-slate-950' : ''
+                      className={`flex-1 h-4 rounded-[4px] border transition-colors cursor-pointer hover:opacity-80 ${colorClass} ${
+                        day.isToday ? 'ring-1 ring-white/40 ring-offset-1 ring-offset-zinc-950' : ''
                       }`}
                     />
                   );
@@ -250,25 +237,25 @@ export function StatusCard({ data, loading, error, onRefresh }) {
                 Array.from({ length: 14 }).map((_, i) => (
                   <div
                     key={i}
-                    className="flex-1 h-5 rounded-md bg-slate-800/50 border border-slate-800 animate-pulse"
+                    className="flex-1 h-4 rounded-[4px] bg-white/[0.04] border border-white/[0.04] animate-pulse"
                   />
                 ))
               )}
             </div>
 
             {/* Legend & Labels */}
-            <div className="flex items-center justify-between text-[9px] font-mono text-slate-500 mt-1.5 px-0.5">
+            <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-2 px-0.5">
               <span>14d ago</span>
               <div className="flex items-center space-x-1">
                 <span>Less</span>
-                <span className="w-2 h-2 rounded-sm bg-slate-800/90 border border-slate-700/60 inline-block" />
-                <span className="w-2 h-2 rounded-sm bg-emerald-950 border border-emerald-800/70 inline-block" />
-                <span className="w-2 h-2 rounded-sm bg-emerald-700/85 border border-emerald-500/80 inline-block" />
-                <span className="w-2 h-2 rounded-sm bg-emerald-500 border border-emerald-400 inline-block" />
-                <span className="w-2 h-2 rounded-sm bg-emerald-400 border border-emerald-300 inline-block" />
+                <span className="w-2 h-2 rounded-[2px] bg-white/[0.05] border border-white/[0.04] inline-block" />
+                <span className="w-2 h-2 rounded-[2px] bg-emerald-950/70 border border-emerald-900/60 inline-block" />
+                <span className="w-2 h-2 rounded-[2px] bg-emerald-700/60 border border-emerald-600/50 inline-block" />
+                <span className="w-2 h-2 rounded-[2px] bg-emerald-500/80 border border-emerald-500/40 inline-block" />
+                <span className="w-2 h-2 rounded-[2px] bg-emerald-400 border border-emerald-300/60 inline-block" />
                 <span>More</span>
               </div>
-              <span className="font-semibold text-slate-400">Today</span>
+              <span className="text-zinc-400">Today</span>
             </div>
           </div>
         </div>
@@ -276,13 +263,13 @@ export function StatusCard({ data, loading, error, onRefresh }) {
 
       {/* Recent Pushes Today (if available) */}
       {data?.recentPushes && data.recentPushes.length > 0 && (
-        <div className="px-1">
-          <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
-            <span className="flex items-center space-x-1">
-              <GitCommit size={11} />
-              <span>Today's Activity</span>
+        <div className="px-0.5">
+          <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+            <span className="flex items-center space-x-1.5">
+              <GitCommit size={12} className="text-zinc-400" />
+              <span className="font-medium text-zinc-300">Today's Activity</span>
             </span>
-            <span className="text-[10px]">{data.recentPushes.length} event(s)</span>
+            <span className="text-[11px] text-zinc-500">{data.recentPushes.length} event(s)</span>
           </div>
 
           <div className="space-y-1.5">
@@ -290,18 +277,18 @@ export function StatusCard({ data, loading, error, onRefresh }) {
               <div
                 key={push.id}
                 onClick={() => handleOpenRepo(push.repoUrl)}
-                className="p-2 rounded-lg bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/80 transition-all cursor-pointer group"
+                className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all cursor-pointer group"
                 title={`Open ${push.repo} on GitHub`}
               >
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-mono text-[11px] font-medium text-slate-300 group-hover:text-indigo-400 truncate flex-1 max-w-[240px] sm:max-w-sm md:max-w-md pr-2">
+                  <span className="font-sans text-xs font-medium text-zinc-300 group-hover:text-white truncate flex-1 max-w-[240px] sm:max-w-sm md:max-w-md pr-2">
                     {push.repo}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-500 shrink-0">
+                  <span className="text-[11px] text-zinc-500 shrink-0">
                     {push.time}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 truncate mt-0.5 font-sans">
+                <p className="text-xs text-zinc-400 truncate mt-1">
                   "{push.latestMessage}"
                 </p>
               </div>

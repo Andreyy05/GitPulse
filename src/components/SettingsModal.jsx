@@ -97,19 +97,19 @@ export function SettingsModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3">
-      <div className="w-full max-w-[360px] max-h-[92vh] bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 flex flex-col space-y-3.5 overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-3">
+      <div className="w-full max-w-[370px] max-h-[90vh] bg-zinc-900 border border-white/[0.08] rounded-xl shadow-2xl p-4 flex flex-col space-y-3.5 overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+        <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5">
           <div className="flex items-center space-x-2">
-            <User size={16} className="text-indigo-400" />
-            <h3 className="font-mono text-sm font-semibold text-slate-100">Settings</h3>
+            <User size={15} className="text-zinc-400" />
+            <h3 className="text-xs font-semibold text-zinc-100 tracking-tight">Settings</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+            className="p-1 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06] transition-colors"
           >
-            <X size={15} />
+            <X size={14} />
           </button>
         </div>
 
@@ -117,49 +117,49 @@ export function SettingsModal({
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto space-y-3.5 text-xs pr-1 custom-scrollbar">
           {/* GitHub Username Input */}
           <div className="flex flex-col space-y-1">
-            <label className="font-mono text-slate-300 font-medium">GitHub Username</label>
+            <label className="text-zinc-300 font-medium tracking-tight">GitHub Username</label>
             <div className="relative">
-              <span className="absolute left-3 top-2.5 text-slate-500 font-mono">@</span>
+              <span className="absolute left-3 top-2 text-zinc-500 font-mono text-xs">@</span>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="e.g. Andreyy05"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-7 pr-3 py-2 text-slate-100 font-mono text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg pl-7 pr-3 py-1.5 text-zinc-100 text-xs focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all font-mono"
                 required
               />
             </div>
-            <span className="text-[10px] text-slate-500">
+            <span className="text-[10px] text-zinc-500">
               Monitors public activity events from GitHub API.
             </span>
           </div>
 
           {/* Auto Refresh Interval */}
           <div className="flex flex-col space-y-1">
-            <label className="font-mono text-slate-300 font-medium flex items-center space-x-1">
-              <Clock size={12} className="text-indigo-400" />
+            <label className="text-zinc-300 font-medium tracking-tight flex items-center space-x-1">
+              <Clock size={12} className="text-zinc-400" />
               <span>Background Refresh Rate</span>
             </label>
             <select
               value={interval}
               onChange={(e) => setInterval(Number(e.target.value))}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-mono text-xs focus:outline-none focus:border-indigo-500 transition-all cursor-pointer"
+              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-1.5 text-zinc-200 text-xs focus:outline-none focus:border-zinc-500 transition-all cursor-pointer"
             >
-              <option value={5}>Every 5 minutes</option>
-              <option value={15}>Every 15 minutes (recommended)</option>
-              <option value={30}>Every 30 minutes</option>
-              <option value={60}>Every 60 minutes</option>
+              <option value={5} className="bg-zinc-900 text-zinc-200">Every 5 minutes</option>
+              <option value={15} className="bg-zinc-900 text-zinc-200">Every 15 minutes (recommended)</option>
+              <option value={30} className="bg-zinc-900 text-zinc-200">Every 30 minutes</option>
+              <option value={60} className="bg-zinc-900 text-zinc-200">Every 60 minutes</option>
             </select>
           </div>
 
           {/* Launch at Startup Switch */}
-          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+          <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between">
             <div className="flex flex-col pr-2">
-              <span className="font-mono text-slate-200 font-medium flex items-center space-x-1.5">
-                <Rocket size={12} className="text-purple-400" />
+              <span className="text-zinc-200 font-medium tracking-tight flex items-center space-x-1.5">
+                <Rocket size={12} className="text-zinc-400" />
                 <span>Launch at Startup</span>
               </span>
-              <span className="text-[10px] text-slate-400 mt-0.5">
+              <span className="text-[10px] text-zinc-500 mt-0.5">
                 Automatically start GitPulse when logging into Windows.
               </span>
             </div>
@@ -172,11 +172,11 @@ export function SettingsModal({
                 setLaunchAtStartup(nextState);
               }}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                launchAtStartup ? 'bg-indigo-600' : 'bg-slate-800'
+                launchAtStartup ? 'bg-emerald-500' : 'bg-white/10'
               }`}
             >
               <span
-                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition duration-200 ease-in-out ${
+                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
                   launchAtStartup ? 'translate-x-4' : 'translate-x-0'
                 }`}
               />
@@ -184,20 +184,20 @@ export function SettingsModal({
           </div>
 
           {/* Daily Streak Reminder & Custom Alert Time */}
-          <div className="pt-2 border-t border-slate-800/80 space-y-2">
+          <div className="pt-2 border-t border-white/[0.06] space-y-2">
             <label className="flex items-start space-x-2.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={eveningAlert}
                 onChange={(e) => setEveningAlert(e.target.checked)}
-                className="mt-0.5 rounded border-slate-700 bg-slate-950 text-indigo-500 focus:ring-0 cursor-pointer"
+                className="mt-0.5 rounded border-zinc-700 bg-white/[0.04] text-emerald-500 focus:ring-0 cursor-pointer"
               />
               <div className="flex flex-col">
-                <span className="font-mono text-slate-200 font-medium flex items-center space-x-1">
-                  <Bell size={11} className="text-amber-400" />
+                <span className="text-zinc-200 font-medium tracking-tight flex items-center space-x-1">
+                  <Bell size={11} className="text-zinc-400" />
                   <span>Daily Streak Reminder</span>
                 </span>
-                <span className="text-[10px] text-slate-400 mt-0.5">
+                <span className="text-[10px] text-zinc-500 mt-0.5">
                   Sends alert if you haven't pushed commits before the scheduled time.
                 </span>
               </div>
@@ -206,12 +206,12 @@ export function SettingsModal({
             {eveningAlert && (
               <div className="pl-6 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-mono text-[11px]">Reminder Time:</span>
+                  <span className="text-zinc-400 text-xs">Reminder Time:</span>
                   <input
                     type="time"
                     value={alertTime}
                     onChange={(e) => setAlertTime(e.target.value)}
-                    className="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-slate-100 font-mono text-xs focus:outline-none focus:border-indigo-500"
+                    className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-2.5 py-1 text-zinc-200 font-mono text-xs focus:outline-none focus:border-zinc-500"
                   />
                 </div>
                 <div className="flex items-center space-x-1.5">
@@ -222,8 +222,8 @@ export function SettingsModal({
                       onClick={() => setAlertTime(preset)}
                       className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-colors ${
                         alertTime === preset
-                          ? 'bg-indigo-600/30 border-indigo-500 text-indigo-300'
-                          : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200'
+                          ? 'bg-white/10 border-white/20 text-white'
+                          : 'bg-white/[0.02] border-white/[0.06] text-zinc-400 hover:text-zinc-200'
                       }`}
                     >
                       {preset}
@@ -235,9 +235,9 @@ export function SettingsModal({
           </div>
 
           {/* Optional Discord Webhook Alert */}
-          <div className="pt-2 border-t border-slate-800/80 space-y-1.5">
-            <label className="font-mono text-slate-300 font-medium flex items-center space-x-1">
-              <MessageSquare size={12} className="text-[#5865F2]" />
+          <div className="pt-2 border-t border-white/[0.06] space-y-1.5">
+            <label className="text-zinc-300 font-medium tracking-tight flex items-center space-x-1">
+              <MessageSquare size={12} className="text-zinc-400" />
               <span>Discord Notification (Optional)</span>
             </label>
             <input
@@ -245,55 +245,55 @@ export function SettingsModal({
               value={discordWebhook}
               onChange={(e) => setDiscordWebhook(e.target.value)}
               placeholder="https://discord.com/api/webhooks/..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-slate-100 font-mono text-[11px] focus:outline-none focus:border-[#5865F2] transition-all"
+              className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-1.5 text-zinc-200 text-xs focus:outline-none focus:border-zinc-500 transition-all font-mono"
             />
-            <span className="text-[10px] text-slate-500 block">
+            <span className="text-[10px] text-zinc-500 block">
               Paste a Discord channel webhook to also receive streak alerts directly in Discord.
             </span>
           </div>
 
           {/* Test Alert Button */}
-          <div className="pt-2">
+          <div className="pt-1.5">
             <button
               type="button"
               onClick={handleTestNotification}
               disabled={testStatus === 'testing'}
-              className="w-full py-1.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:bg-slate-800/70 text-slate-300 font-mono text-[11px] flex items-center justify-center space-x-1.5 transition-colors"
+              className="w-full py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] text-zinc-300 text-xs font-medium flex items-center justify-center space-x-1.5 transition-colors"
             >
-              <Send size={12} className={testStatus === 'testing' ? 'animate-pulse text-indigo-400' : 'text-slate-400'} />
+              <Send size={11} className={testStatus === 'testing' ? 'animate-pulse text-zinc-300' : 'text-zinc-400'} />
               <span>
                 {testStatus === 'testing'
                   ? 'Sending test alert...'
                   : testStatus === 'success'
-                  ? '✅ Alert Sent!'
+                  ? 'Alert Sent'
                   : testStatus
-                  ? `❌ ${testStatus}`
-                  : 'Send Test Notification Now'}
+                  ? `Failed: ${testStatus}`
+                  : 'Send Test Notification'}
               </span>
             </button>
           </div>
 
           {/* Modal Action Buttons */}
-          <div className="pt-2 border-t border-slate-800/80 flex items-center justify-end space-x-2">
+          <div className="pt-2.5 border-t border-white/[0.06] flex items-center justify-end space-x-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 rounded-xl border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+              className="px-3 py-1.5 rounded-lg border border-white/[0.08] text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] transition-colors text-xs font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium flex items-center space-x-1 shadow-lg shadow-indigo-600/30 transition-all"
+              className="px-3.5 py-1.5 rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 font-medium text-xs flex items-center space-x-1.5 transition-colors shadow-sm"
             >
               {savedSuccess ? (
                 <>
-                  <Check size={13} />
-                  <span>Saved!</span>
+                  <Check size={12} />
+                  <span>Saved</span>
                 </>
               ) : (
                 <>
-                  <ShieldCheck size={13} />
+                  <ShieldCheck size={12} />
                   <span>Save Settings</span>
                 </>
               )}

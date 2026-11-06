@@ -32,16 +32,16 @@ export function CommitFuel() {
   };
 
   return (
-    <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800/90 shadow-sm flex flex-col space-y-2.5">
+    <div className="p-4 sm:p-5 rounded-xl bg-white/[0.03] border border-white/[0.08] flex flex-col space-y-3">
       {/* Header with Title and Mode Filters */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-1.5 text-xs font-mono font-semibold text-slate-200">
-          <Flame size={14} className="text-amber-400" />
+        <div className="flex items-center space-x-1.5 text-xs font-medium text-zinc-300 tracking-tight">
+          <Flame size={13} className="text-zinc-400" />
           <span>Commit Fuel</span>
         </div>
 
-        {/* Category Pills */}
-        <div className="flex items-center space-x-1 text-[10px] font-mono bg-slate-950 p-0.5 rounded-lg border border-slate-800">
+        {/* Category Pills: Monochrome & Subtle */}
+        <div className="flex items-center space-x-0.5 p-0.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
           {[
             { id: 'all', label: 'Mix' },
             { id: 'conventional', label: 'Clean' },
@@ -50,10 +50,10 @@ export function CommitFuel() {
             <button
               key={cat.id}
               onClick={() => handleCategoryChange(cat.id)}
-              className={`px-2 py-0.5 rounded-md transition-all ${
+              className={`px-2 py-0.5 rounded text-[11px] font-medium tracking-tight transition-colors ${
                 category === cat.id
-                  ? 'bg-indigo-600 text-white font-medium shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white/10 text-white'
+                  : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               {cat.label}
@@ -63,9 +63,9 @@ export function CommitFuel() {
       </div>
 
       {/* Generated Message Box */}
-      <div className="relative group bg-slate-950/70 border border-slate-800/80 rounded-xl p-2.5 min-h-[58px] flex items-center justify-between transition-all">
+      <div className="relative group bg-black/20 border border-white/[0.06] rounded-lg p-3 min-h-[54px] flex items-center justify-between transition-all">
         <span
-          className={`font-mono text-xs text-indigo-200/90 select-text leading-relaxed pr-2 transition-opacity ${
+          className={`font-mono text-xs text-zinc-300 select-text leading-relaxed pr-2 transition-opacity ${
             isRolling ? 'opacity-30' : 'opacity-100'
           }`}
         >
@@ -78,29 +78,29 @@ export function CommitFuel() {
             onClick={handleRoll}
             disabled={isRolling}
             title="Generate new message"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+            className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06] transition-colors"
           >
-            <Dices size={14} className={isRolling ? 'animate-spin text-indigo-400' : ''} />
+            <Dices size={13} className={isRolling ? 'animate-spin text-zinc-300' : ''} />
           </button>
 
           <button
             onClick={handleCopy}
             title="Copy to clipboard"
-            className={`p-1.5 rounded-lg transition-all ${
+            className={`p-1.5 rounded-md transition-colors ${
               copied
-                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'text-emerald-400 bg-emerald-500/10'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06]'
             }`}
           >
-            {copied ? <Check size={14} /> : <Copy size={14} />}
+            {copied ? <Check size={13} /> : <Copy size={13} />}
           </button>
         </div>
       </div>
 
       {/* Footer feedback hint */}
-      <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono px-0.5">
+      <div className="flex items-center justify-between text-[11px] text-zinc-500 px-0.5 tracking-tight">
         <span>Click copy to use in git commit</span>
-        {copied && <span className="text-emerald-400 font-semibold animate-pulse">Copied to clipboard!</span>}
+        {copied && <span className="text-emerald-400 font-medium">Copied to clipboard</span>}
       </div>
     </div>
   );

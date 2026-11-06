@@ -20,61 +20,61 @@ export function Header({ status = 'default', onOpenSettings }) {
     }
   };
 
-  const statusGlow =
+  const statusDot =
     status === 'green'
-      ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]'
+      ? 'bg-emerald-400'
       : status === 'red'
-      ? 'bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.8)]'
-      : 'bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]';
+      ? 'bg-rose-400'
+      : 'bg-zinc-500';
 
   return (
     <header
       onDoubleClick={handleToggleMaximize}
-      className="h-10 bg-slate-950/80 backdrop-blur border-b border-slate-800/80 px-3 flex items-center justify-between select-none drag-region z-50 shrink-0"
+      className="h-9 bg-zinc-950/70 backdrop-blur-md border-b border-white/[0.06] px-3.5 flex items-center justify-between select-none drag-region z-50 shrink-0"
     >
       {/* Brand & Live Indicator */}
       <div className="flex items-center space-x-2">
-        <div className="relative flex items-center justify-center">
-          <Activity size={16} className="text-indigo-400" />
-          <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${statusGlow} animate-pulse`} />
+        <div className="flex items-center space-x-1.5">
+          <Activity size={13} className="text-zinc-400" />
+          <span className="text-xs font-medium tracking-tight text-zinc-200">
+            GitPulse
+          </span>
+          <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`} />
         </div>
-        <span className="font-mono text-xs font-semibold tracking-wider text-slate-200">
-          Git<span className="text-indigo-400">Pulse</span>
-        </span>
       </div>
 
       {/* Window Controls */}
-      <div className="flex items-center space-x-1 no-drag">
+      <div className="flex items-center space-x-0.5 no-drag">
         <button
           onClick={onOpenSettings}
           title="Settings"
-          className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 transition-colors"
+          className="p-1 rounded text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06] transition-colors"
         >
-          <SettingsIcon size={14} />
+          <SettingsIcon size={13} />
         </button>
 
         <button
           onClick={handleMinimize}
           title="Minimize to Tray"
-          className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 transition-colors"
+          className="p-1 rounded text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06] transition-colors"
         >
-          <Minus size={14} />
+          <Minus size={13} />
         </button>
 
         <button
           onClick={handleToggleMaximize}
           title="Maximize / Restore"
-          className="p-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 transition-colors"
+          className="p-1 rounded text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06] transition-colors"
         >
-          <Square size={12} />
+          <Square size={11} />
         </button>
 
         <button
           onClick={handleClose}
           title="Close (Hide to Tray)"
-          className="p-1.5 rounded-md text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+          className="p-1 rounded text-zinc-400 hover:text-rose-400 hover:bg-white/[0.06] transition-colors"
         >
-          <X size={14} />
+          <X size={13} />
         </button>
       </div>
     </header>

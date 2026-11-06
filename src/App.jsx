@@ -213,7 +213,7 @@ export function App() {
   const currentStatus = data?.hasPushedToday ? 'green' : data ? 'red' : 'default';
 
   return (
-    <div className="w-full h-screen bg-slate-950 text-slate-100 flex flex-col font-sans select-none overflow-hidden">
+    <div className="w-full h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none overflow-hidden">
       {/* Draggable Frameless Header */}
       <Header
         status={currentStatus}
@@ -221,8 +221,8 @@ export function App() {
       />
 
       {/* Main Content Area - Scrollable & Dynamically Adaptive */}
-      <main className="flex-1 w-full p-3 overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col items-center">
-        <div className="w-full max-w-xl space-y-3">
+      <main className="flex-1 w-full p-4 overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col items-center">
+        <div className="w-full max-w-xl space-y-3.5">
           <StatusCard
             data={data}
             loading={loading}
