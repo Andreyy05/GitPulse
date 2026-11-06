@@ -33,6 +33,10 @@ export function App() {
     return localStorage.getItem('gitpulse_launch_at_startup') === 'true';
   });
 
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('gitpulse_theme') || 'dark';
+  });
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -179,6 +183,39 @@ export function App() {
     }
   }, []);
 
+  // Theme synchronization (dark / light / system)
+  useEffect(() => {
+    const updateTheme = () => {
+      let isDark = true;
+      if (theme === 'dark') {
+        isDark = true;
+      } else if (theme === 'light') {
+        isDark = false;
+      } else if (theme === 'system') {
+        isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      if (window.electronAPI?.setWindowTheme) {
+        window.electronAPI.setWindowTheme(isDark);
+      }
+    };
+
+    updateTheme();
+
+    if (theme === 'system') {
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+      const listener = () => updateTheme();
+      media.addEventListener('change', listener);
+      return () => media.removeEventListener('change', listener);
+    }
+  }, [theme]);
+
   const handleSaveSettings = ({
     username: newUsername,
     refreshInterval: newInterval,
@@ -186,6 +223,7 @@ export function App() {
     alertTime: newAlertTime,
     discordWebhook: newDiscordWebhook,
     launchAtStartup: newLaunchAtStartup,
+    theme: newTheme,
   }) => {
     setUsername(newUsername);
     setRefreshInterval(newInterval);
@@ -198,6 +236,11 @@ export function App() {
     localStorage.setItem('gitpulse_evening_alert', String(newEveningAlert));
     localStorage.setItem('gitpulse_alert_time', newAlertTime);
     localStorage.setItem('gitpulse_discord_webhook', newDiscordWebhook);
+
+    if (newTheme) {
+      setTheme(newTheme);
+      localStorage.setItem('gitpulse_theme', newTheme);
+    }
 
     if (typeof newLaunchAtStartup === 'boolean') {
       setLaunchAtStartup(newLaunchAtStartup);
@@ -213,7 +256,7 @@ export function App() {
   const currentStatus = data?.hasPushedToday ? 'green' : data ? 'red' : 'default';
 
   return (
-    <div className="w-full h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none overflow-hidden">
+    <div className="w-full h-screen bg-[#f5f5f7] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans select-none overflow-hidden transition-colors duration-200">
       {/* Draggable Frameless Header */}
       <Header
         status={currentStatus}
@@ -244,6 +287,7 @@ export function App() {
         currentAlertTime={alertTime}
         currentDiscordWebhook={discordWebhook}
         currentLaunchAtStartup={launchAtStartup}
+        currentTheme={theme}
         onSave={handleSaveSettings}
       />
     </div>

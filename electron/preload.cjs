@@ -21,6 +21,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getLoginItemSettings: () => ipcRenderer.invoke('get-login-item-settings'),
   setLoginItemSettings: (enabled) => ipcRenderer.invoke('set-login-item-settings', enabled),
 
+  // Window theme & background synchronization
+  setWindowTheme: (isDark) => ipcRenderer.send('set-window-theme', isDark),
+
   // System events listeners
   onRefreshRequested: (callback) => {
     const handler = () => callback();

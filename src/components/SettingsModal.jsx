@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, User, Bell, Clock, ShieldCheck, Send, MessageSquare, ExternalLink, Rocket } from 'lucide-react';
+import { X, Check, User, Bell, Clock, ShieldCheck, Send, MessageSquare, ExternalLink, Rocket, Moon, Sun, Monitor, SunMedium } from 'lucide-react';
 import { sendDesktopNotification, sendDiscordWebhook } from '../services/notifications';
 
 export function SettingsModal({
@@ -11,6 +11,7 @@ export function SettingsModal({
   currentAlertTime,
   currentDiscordWebhook,
   currentLaunchAtStartup,
+  currentTheme,
   onSave,
 }) {
   const [username, setUsername] = useState(currentUsername);
@@ -18,12 +19,20 @@ export function SettingsModal({
   const [eveningAlert, setEveningAlert] = useState(currentEveningAlert);
   const [alertTime, setAlertTime] = useState(currentAlertTime || '18:00');
   const [discordWebhook, setDiscordWebhook] = useState(currentDiscordWebhook || '');
+  const [theme, setTheme] = useState(currentTheme || 'dark');
   const [launchAtStartup, setLaunchAtStartup] = useState(() => {
     if (typeof currentLaunchAtStartup === 'boolean') return currentLaunchAtStartup;
     return localStorage.getItem('gitpulse_launch_at_startup') === 'true';
   });
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [testStatus, setTestStatus] = useState(null);
+
+  // Sync props when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setTheme(currentTheme || 'dark');
+    }
+  }, [isOpen, currentTheme]);
 
   // Sync startup state from Electron when modal opens
   useEffect(() => {
@@ -62,6 +71,7 @@ export function SettingsModal({
       alertTime,
       discordWebhook: discordWebhook.trim(),
       launchAtStartup,
+      theme,
     });
 
     setSavedSuccess(true);

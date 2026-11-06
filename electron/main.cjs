@@ -264,6 +264,12 @@ ipcMain.on('window-hide-to-tray', () => {
   if (mainWindow) mainWindow.hide();
 });
 
+ipcMain.on('set-window-theme', (_, isDark) => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.setBackgroundColor(isDark ? '#09090b' : '#f5f5f7');
+  }
+});
+
 ipcMain.on('update-tray-status', (_, { status, commitsToday, text }) => {
   currentTrayStatus = {
     status: status || 'default',
