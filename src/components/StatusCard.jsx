@@ -106,6 +106,14 @@ export function StatusCard({ data, loading, error, onRefresh }) {
         </button>
       </div>
 
+      {/* Rate Limit Warning Banner (if API quota throttled) */}
+      {data?.rateLimitWarning && (
+        <div className="px-3 py-2 rounded-xl bg-amber-500/[0.08] border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs flex items-center space-x-2">
+          <AlertTriangle size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
+          <span className="font-medium text-[11px]">{data.rateLimitWarning}</span>
+        </div>
+      )}
+
       {/* Main Status Hero Card */}
       {error ? (
         <div className="p-4 rounded-xl bg-rose-500/[0.08] border border-rose-500/20 text-rose-700 dark:text-rose-300 text-xs flex items-start space-x-2.5">
