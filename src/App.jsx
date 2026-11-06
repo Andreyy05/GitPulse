@@ -256,7 +256,7 @@ export function App() {
   const currentStatus = data?.hasPushedToday ? 'green' : data ? 'red' : 'default';
 
   return (
-    <div className="w-full h-screen bg-[#f5f5f7] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans select-none overflow-hidden transition-colors duration-200">
+    <div className="w-full h-screen bg-[#f4f5f7] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans select-none overflow-hidden transition-colors duration-200">
       {/* Draggable Frameless Header */}
       <Header
         status={currentStatus}

@@ -266,7 +266,7 @@ ipcMain.on('window-hide-to-tray', () => {
 
 ipcMain.on('set-window-theme', (_, isDark) => {
   if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.setBackgroundColor(isDark ? '#09090b' : '#f5f5f7');
+    mainWindow.setBackgroundColor(isDark ? '#09090b' : '#f4f5f7');
   }
 });
 
