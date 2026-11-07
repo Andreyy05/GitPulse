@@ -50,11 +50,10 @@ export function CommitFuel() {
             <button
               key={cat.id}
               onClick={() => handleCategoryChange(cat.id)}
-              className={`px-2.5 py-0.5 rounded text-[11px] tracking-tight transition-all ${
-                category === cat.id
-                  ? 'bg-white text-zinc-900 shadow-xs font-medium dark:bg-white/10 dark:text-white dark:shadow-none'
-                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium'
-              }`}
+              className={`px-2.5 py-0.5 rounded text-[11px] tracking-tight transition-all ${category === cat.id
+                ? 'bg-white text-zinc-900 shadow-xs font-medium dark:bg-white/10 dark:text-white dark:shadow-none'
+                : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 font-medium'
+                }`}
             >
               {cat.label}
             </button>
@@ -65,9 +64,8 @@ export function CommitFuel() {
       {/* Generated Message Box */}
       <div className="relative group bg-zinc-50 dark:bg-black/20 border border-zinc-200/90 dark:border-white/[0.06] rounded-lg p-3 min-h-[54px] flex items-center justify-between transition-all">
         <span
-          className={`font-mono text-xs text-zinc-800 dark:text-zinc-200 select-text leading-relaxed pr-2 transition-opacity ${
-            isRolling ? 'opacity-30' : 'opacity-100'
-          }`}
+          className={`font-mono text-xs text-zinc-800 dark:text-zinc-200 select-text leading-relaxed pr-2 transition-opacity ${isRolling ? 'opacity-30' : 'opacity-100'
+            }`}
         >
           {currentMessage}
         </span>
@@ -86,11 +84,10 @@ export function CommitFuel() {
           <button
             onClick={handleCopy}
             title="Copy to clipboard"
-            className={`p-1.5 rounded-md transition-colors ${
-              copied
-                ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-500/10'
-                : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-white/[0.06]'
-            }`}
+            className={`p-1.5 rounded-md transition-colors ${copied
+              ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-500/10'
+              : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-white/[0.06]'
+              }`}
           >
             {copied ? <Check size={13} /> : <Copy size={13} />}
           </button>
