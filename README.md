@@ -6,11 +6,12 @@
 ![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-emerald?style=for-the-badge)
+![Open Source](https://img.shields.io/badge/Open_Source-Public_Code-emerald?style=for-the-badge)
+![University](https://img.shields.io/badge/Unicorn_University-Student_Project-1b365d?style=for-the-badge)
 
 **A minimalist, Apple/Raycast-inspired desktop utility for developers to monitor daily GitHub streaks, preserve momentum with real-time countdowns and smart alerts, inspect 14-day contribution heatmaps, and generate instant commit fuel.**
 
-[Features](#-key-features) • [Installation & Setup](#-installation--setup) • [Architecture](#-architecture--security) • [Keyboard Shortcuts](#-keyboard-shortcuts) • [Configuration](#-configuration) • [Project Structure](#-project-structure) • [License](#-license)
+[Features](#-key-features) • [Installation & Setup](#-installation--setup) • [Architecture](#-architecture--security) • [Keyboard Shortcuts](#-keyboard-shortcuts) • [Configuration](#-configuration) • [Project Structure](#-project-structure) • [Author & Ownership](#-author--ownership)
 
 </div>
 
@@ -210,10 +211,13 @@ Contributions, feature requests, and bug reports are welcome!
 ## 👤 Author
 
 **Andrej Pavliščak**
+- Student at **Unicorn University**
 - GitHub: [@Andreyy05](https://github.com/Andreyy05)
 
 ---
 
-## 📄 License
+## 📄 License & Ownership
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+Copyright © 2026 **Andrej Pavliščak** (Unicorn University). All rights reserved.
+
+This project is open-source for public inspection, learning, and reference. It is **not** licensed under the MIT License or any copyleft license. The author retains full and exclusive ownership of this codebase. Unauthorized commercial distribution or claiming authorship is prohibited without explicit written permission from the author.

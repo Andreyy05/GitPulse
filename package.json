@@ -23,7 +23,7 @@
     "developer-tools"
   ],
   "author": "Andrej Pavliščak",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "dependencies": {
     "canvas-confetti": "^1.9.4",
     "lucide-react": "^0.468.0",
