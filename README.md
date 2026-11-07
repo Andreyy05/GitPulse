@@ -22,35 +22,9 @@
 
 By pairing direct GitHub profile contribution calendar scraping with real-time push event parsing, GitPulse delivers a 100% accurate, zero-lag view of your daily commits. When evening approaches and your streak is still at risk, GitPulse notifies you via native Windows notifications and optional Discord webhook alerts so you never lose a streak again.
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│ ⚡ GitPulse   ● Safe today              [⚙️]  [-]  [□]  [✕] │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│   @Andreyy05                                      [🔄 Sync] │
-│   Synced 13:00                                              │
-│                                                             │
-│   ┌─────────────────────────────────────────────────────┐   │
-│   │  ● STREAK ACTIVE                         Safe today │   │
-│   │                                                     │   │
-│   │  14  14 commits pushed today                        │   │
-│   │      Streak secured for today                       │   │
-│   │                                                     │   │
-│   │  ⏱ Time until midnight:            10h : 52m : 15s  │   │
-│   │  [==================================----------]     │   │
-│   │                                                     │   │
-│   │  📅 14-Day Activity               54 commits total  │   │
-│   │  [■][■][ ][■][ ][ ][ ][ ][■][■][■][■][■][■]         │   │
-│   │  14d ago           Less ■ ■ ■ ■ More          Today │   │
-│   └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│   ┌─────────────────────────────────────────────────────┐   │
-│   │  🔥 Commit Fuel                      [Mix|Clean|Witty]│   │
-│   │                                                     │   │
-│   │  feat(auth): integrate OAuth2 PKCE exchange  [📋]   │   │
-│   └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="assets/preview.png" alt="GitPulse Desktop Preview" width="360" />
+</p>
 
 ---
 
